@@ -46,16 +46,16 @@ tmux_conf_theme_24b_colour=false
 
 # window style
 tmux_conf_theme_window_fg='default'
-tmux_conf_theme_window_bg='default'
+tmux_conf_theme_window_bg='#444444'
 
 # highlight focused pane (tmux >= 2.1), possible values are:
 #   - true
 #   - false (default)
-tmux_conf_theme_highlight_focused_pane=false
+tmux_conf_theme_highlight_focused_pane=true
 
 # focused pane colours:
 tmux_conf_theme_focused_pane_fg='default'
-tmux_conf_theme_focused_pane_bg='#0087d7'               # light blue
+tmux_conf_theme_focused_pane_bg='#000000'               # light blue
 
 # pane border style, possible values are:
 #   - thin (default)
@@ -146,14 +146,14 @@ tmux_conf_theme_window_status_last_bg='default'
 tmux_conf_theme_window_status_last_attr='none'
 
 # status left/right sections separators
-tmux_conf_theme_left_separator_main=''
-tmux_conf_theme_left_separator_sub='|'
-tmux_conf_theme_right_separator_main=''
-tmux_conf_theme_right_separator_sub='|'
-#tmux_conf_theme_left_separator_main='\uE0B0'  # /!\ you don't need to install Powerline
-#tmux_conf_theme_left_separator_sub='\uE0B1'   #   you only need fonts patched with
-#tmux_conf_theme_right_separator_main='\uE0B2' #   Powerline symbols or the standalone
-#tmux_conf_theme_right_separator_sub='\uE0B3'  #   PowerlineSymbols.otf font, see README.md
+# tmux_conf_theme_left_separator_main=''
+# tmux_conf_theme_left_separator_sub='|'
+# tmux_conf_theme_right_separator_main=''
+# tmux_conf_theme_right_separator_sub='|'
+tmux_conf_theme_left_separator_main='\uE0B0'  # /!\ you don't need to install Powerline
+tmux_conf_theme_left_separator_sub='\uE0B1'   #   you only need fonts patched with
+tmux_conf_theme_right_separator_main='\uE0B2' #   Powerline symbols or the standalone
+tmux_conf_theme_right_separator_sub='\uE0B3'  #   PowerlineSymbols.otf font, see README.md
 
 # status left/right content:
 #   - separate main sections with '|'
@@ -294,3 +294,45 @@ tmux_conf_copy_to_os_clipboard=false
 
 # move status line to top
 #set -g status-position top
+
+unbind C-b
+set-option -g prefix `
+# bind ctrl+a and ctrl+b to switch prefix key, so that we can use backtick (`) when we need
+bind-key C-a set-option -g prefix C-a
+bind-key C-b set-option -g prefix `
+set -sg escape-time 0
+# bind-key j command-prompt -p "join pane from:"  "join-pane -s '%%'"
+# bind-key s command-prompt -p "send pane to:"  "join-pane -t '%%'"
+set -g repeat-time 125
+setw -g mode-keys vi
+# set -g set-titles-string '#S:#I.#P #W'
+set -g status-keys vi
+# set -g visual-activity on
+bind | split-window -h
+
+# List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-pain-control'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @resurrect-capture-pane-contents 'on'
+# set -g @resurrect-save-bash-history 'on'
+set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
+set -g @plugin 'tmux-plugins/tmux-copycat'
+set -g @plugin 'tmux-plugins/tmux-open'
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @yank_selection 'clipboard'
+set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+# set -g @plugin 'odedlaz/tmux-onedark-theme'
+# set -g @plugin 'odedlaz/tmux-status-variables'
+set-option -g @ipinfo_format "#ip"
+set -g @plugin 'thewtex/tmux-mem-cpu-load'
+# set -g @onedark_widgets "#($TMUX_PLUGIN_MANAGER_PATH/tmux-mem-cpu-load/tmux-mem-cpu-load --interval 2) (#{ipinfo})"
+set -g @plugin 'Morantron/tmux-fingers'
+# Initialize TMUX plugin manager
+if "test ! -d ~/.tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
+run '~/.tmux/plugins/tpm/tpm'

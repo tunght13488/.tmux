@@ -1,0 +1,123 @@
+# change prefix key to backtick (`)
+unbind C-b
+set-option -g prefix `
+# bind ctrl+a and ctrl+b to switch prefix key, so that we can use backtick (`) when we need
+bind-key C-a set-option -g prefix C-a
+bind-key C-b set-option -g prefix `
+set -sg escape-time 0
+
+# Reload tmux config with r
+bind-key r source-file ~/.tmux.conf
+
+bind-key j command-prompt -p "join pane from:"  "join-pane -s '%%'"
+bind-key s command-prompt -p "send pane to:"  "join-pane -t '%%'"
+
+# Default key repeat is 500ms, lower to 125ms
+# otherwise hitting up arrow right after moving to new window counts
+# as moving back to window above
+set -g repeat-time 125
+
+# make the first window number start at 1
+set -g base-index 1
+setw -g pane-base-index 1
+
+# vim key in copy mode
+setw -g mode-keys vi
+# setw -g mode-mouse on
+
+# Terminal emulator window title
+set-window-option -g automatic-rename on
+set -g set-titles on
+set -g set-titles-string '#S:#I.#P #W'
+# set -g set-titles-string '#(whoami)::#h::#(curl ipecho.net/plain;echo)'
+# set -g default-terminal "screen-256color"
+set -g status-keys vi
+set -g history-limit 10000
+
+# set -g status-interval 2
+# set -g status-right "#[fg=green]#($TMUX_PLUGIN_MANAGER_PATH/tmux-mem-cpu-load/tmux-mem-cpu-load --colors --powerline-right --interval 2)#[default]"
+# set -g status-left-length 60
+# set -g status-bg black
+# set -g status-fg white
+# set -g status-left-length 30
+# set -g status-right-length 60
+# set -g status-left '[#I:#P]'    # Show window:pane numbers
+# set -g status-left "#[fg=Green]#(whoami)#[fg=white]@#[fg=blue]#(hostname -s)#[fg=white]::##[fg=yellow]#(curl ipecho.net/plain;echo)::#(uname -sr) #[default][#I:#P] "
+# set -g status-left '#[fg=green](#S) #(whoami)'
+# set -g status-justify left
+# set -g status-right '#[fg=cyan]#(/usr/bin/gcalcli --nc --ignore-started agenda "$(date\)"| head -2 | tail -1) #[fg=green]#(/usr/bin/dstat --battery-remain --nocolor 1 0 | tail -1) #[fg=green]#(whoami)@#H #[fg=yellow]#(cut -d " " -f 1 /proc/loadavg) #[default]%a %d %b %R'
+# set -g status-right '#{prefix_highlight}#[fg=Cyan]#S #[fg=red]#{cpu_icon}#{cpu_percentage} #[fg=white]%a %d %b %R'
+# set -g status-right '#[fg=black]#(whoami)@#H #[fg=red]#(cut -d " " -f 1 /proc/loadavg) #[default]%a %d %b %R'
+# set -g status-right "#{free_mem}#[default]"
+# set -g status-right '#[fg=yellow]#(cut -d " " -f 1-3 /proc/loadavg)#[default] #[fg=white]%H:%M#[default]'
+set-option -g @ipinfo_format "#ip (#isp)"
+
+# set -g pane-border-fg colour235
+# set -g pane-border-bg black
+# set -g pane-active-border-fg green
+# set -g pane-active-border-bg black
+
+# Notifying if other windows has activities
+setw -g monitor-activity on
+set -g visual-activity on
+
+# Window modes color
+setw -g mode-bg colour240
+setw -g mode-fg colour255
+set -g window-style 'bg=colour238'
+set -g window-active-style 'bg=colour235'
+
+# Message/command input colors
+# set -g message-bg colour240
+# set -g message-fg colour255
+
+# Window status colors
+setw -g window-status-bg black
+setw -g window-status-fg colour248
+#setw -g window-status-alert-attr underscore
+#setw -g window-status-alert-bg colour235
+#setw -g window-status-alert-fg colour248
+# setw -g window-status-current-attr bright
+# setw -g window-status-current-bg white
+# setw -g window-status-current-fg black
+
+# Clock
+setw -g clock-mode-colour colour250
+setw -g clock-mode-style 24
+
+# `p pastes tmux buffer to X buffer
+# bind-key p run-shell "tmux show-buffer | xsel -i"
+
+# Powerline
+run-shell "$HOME/.local/bin/powerline-daemon -q"
+source "$HOME/.local/lib/python3.7/site-packages/powerline/bindings/tmux/powerline.conf"
+
+if-shell "uname | grep -q Darwin" "source-file ~/.tmux-mac.conf" "source-file ~/.tmux-linux.conf"
+set -g focus-events on
+
+# List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-pain-control'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @resurrect-capture-pane-contents 'on'
+# set -g @resurrect-save-bash-history 'on'
+set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
+set -g @plugin 'tmux-plugins/tmux-copycat'
+set -g @plugin 'tmux-plugins/tmux-open'
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @yank_selection 'clipboard'
+set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+# set -g @plugin 'odedlaz/tmux-onedark-theme'
+# set -g @plugin 'odedlaz/tmux-status-variables'
+set-option -g @ipinfo_format "#ip"
+set -g @plugin 'thewtex/tmux-mem-cpu-load'
+# set -g @onedark_widgets "#($TMUX_PLUGIN_MANAGER_PATH/tmux-mem-cpu-load/tmux-mem-cpu-load --interval 2) (#{ipinfo})"
+set -g @plugin 'Morantron/tmux-fingers'
+# Initialize TMUX plugin manager
+if "test ! -d ~/.tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
+run '~/.tmux/plugins/tpm/tpm'
